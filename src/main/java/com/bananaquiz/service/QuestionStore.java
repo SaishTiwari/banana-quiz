@@ -1,7 +1,9 @@
 
 package com.bananaquiz.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,7 +25,8 @@ public class QuestionStore {
         Integer correctAnswer = answers.remove(questionId);
 
         if (correctAnswer == null) {
-            throw new IllegalArgumentException(
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
                     "Question not found or already answered"
             );
         }

@@ -14,16 +14,18 @@ public class SecurityConfig {
             throws Exception {
 
         http
-
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/api/banana/answer")
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/health",
                                 "/api/banana/question",
+                                "/api/banana/answer",
                                 "/error"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-
                 .formLogin(form -> {});
 
         return http.build();
