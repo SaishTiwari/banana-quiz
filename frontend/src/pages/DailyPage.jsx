@@ -9,6 +9,7 @@ function DailyPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [timeRemaining, setTimeRemaining] = useState("");
 
   function formatStreak(days) {
     return `${days} ${days === 1 ? "day" : "days"}`;
@@ -27,7 +28,10 @@ function DailyPage() {
       }
 
       const data = await response.json();
+
       setDaily(data);
+      setResult(null);
+      setAnswer("");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -38,6 +42,47 @@ function DailyPage() {
   useEffect(() => {
     loadDaily();
   }, []);
+
+  useEffect(() => {
+    function updateCountdown() {
+      const now = new Date();
+
+      const nextReset = new Date(now);
+      nextReset.setUTCHours(24, 0, 0, 0);
+
+      const difference = nextReset.getTime() - now.getTime();
+
+      const hours = Math.floor(difference / 3600000);
+      const minutes = Math.floor((difference % 3600000) / 60000);
+      const seconds = Math.floor((difference % 60000) / 1000);
+
+      const pad = (number) => String(number).padStart(2, "0");
+
+      setTimeRemaining(
+        `${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`
+      );
+    }
+
+    updateCountdown();
+
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (!daily) return;
+
+    const interval = setInterval(() => {
+      const todayUTC = new Date().toISOString().slice(0, 10);
+
+      if (todayUTC !== daily.date) {
+        loadDaily();
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [daily]);
 
   async function submitAnswer(event) {
     event.preventDefault();
@@ -87,9 +132,13 @@ function DailyPage() {
       }
 
       const data = await response.json();
+
       setResult(data);
 
       await loadDaily();
+
+      // Keep the answer result visible after refreshing progress.
+      setResult(data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -149,7 +198,19 @@ function DailyPage() {
 
         <p>Longest Streak: {formatStreak(daily.longestStreak)}</p>
 
-        <p>Come back tomorrow for another challenge.</p>
+        <h2>Next Daily Banana in</h2>
+
+        <p
+          style={{
+            fontSize: "28px",
+            fontWeight: "bold",
+            fontVariantNumeric: "tabular-nums",
+          }}
+        >
+          {timeRemaining}
+        </p>
+
+        <p>New challenge unlocks at 00:00 UTC.</p>
 
         <Link to="/dashboard">Back to Dashboard</Link>
       </main>
@@ -197,6 +258,20 @@ function DailyPage() {
               <p>
                 Longest streak: {formatStreak(result.longestStreak)}
               </p>
+
+              <h2>Next Daily Banana in</h2>
+
+              <p
+                style={{
+                  fontSize: "28px",
+                  fontWeight: "bold",
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {timeRemaining}
+              </p>
+
+              <p>New challenge unlocks at 00:00 UTC.</p>
 
               <Link to="/dashboard">Back to Dashboard</Link>
             </>
