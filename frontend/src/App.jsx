@@ -6,6 +6,7 @@ import QuizPage from "./pages/QuizPage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import JourneyPage from "./pages/JourneyPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/journey" element={<JourneyPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

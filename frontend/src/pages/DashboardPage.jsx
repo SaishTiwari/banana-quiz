@@ -11,7 +11,7 @@ function DashboardPage() {
         <section>
           <h2>Banana Journey</h2>
           <p>Complete timed challenges and unlock new levels.</p>
-          <p>Coming soon</p>
+          <Link to="/journey">Play Banana Journey</Link>
         </section>
 
         <section>
