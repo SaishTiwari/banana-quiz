@@ -25,6 +25,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private int totalXp = 0;
+
+    @Column(nullable = false)
+    private int journeyLevel = 1;
+
     protected User() {
     }
 
@@ -48,5 +54,21 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public int getTotalXp() {
+        return totalXp;
+    }
+
+    public int getJourneyLevel() {
+        return journeyLevel;
+    }
+
+    public void setTotalXp(int totalXp) {
+        this.totalXp = totalXp;
+    }
+
+    public void setJourneyLevel(int journeyLevel) {
+        this.journeyLevel = journeyLevel;
     }
 }
