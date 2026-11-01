@@ -19,7 +19,7 @@ function RegisterPage() {
 
         try {
             await registerUser(name, email, password);
-            navigate("/login");
+            navigate("/dashboard", { replace: true });
         } catch (err) {
             setError("Registration failed. Check your details or try another email.");
         } finally {

@@ -19,7 +19,7 @@ function LoginPage() {
 
         try {
             await loginUser(email, password);
-            navigate("/quiz");
+            navigate("/dashboard", { replace: true });
         } catch (err) {
             setError("Login failed. Please check your credentials.");
         } finally {
