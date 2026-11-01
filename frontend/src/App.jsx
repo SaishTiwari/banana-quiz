@@ -7,6 +7,7 @@ import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import JourneyPage from "./pages/JourneyPage";
+import DailyPage from "./pages/DailyPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/journey" element={<JourneyPage />} />
+          <Route path="/daily" element={<DailyPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

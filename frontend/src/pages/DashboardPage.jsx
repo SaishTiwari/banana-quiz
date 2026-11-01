@@ -23,7 +23,7 @@ function DashboardPage() {
         <section>
           <h2>Daily Banana</h2>
           <p>Answer five questions every day and build your streak.</p>
-          <p>Coming soon</p>
+          <Link to="/daily">Play Daily Banana</Link>
         </section>
 
         <section>
