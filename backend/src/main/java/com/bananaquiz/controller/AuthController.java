@@ -35,22 +35,30 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.Locale;
 import java.util.Map;
 
+import com.bananaquiz.entity.User;
+import com.bananaquiz.repository.UserRepository;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+
     private final SecurityContextRepository securityContextRepository =
             new HttpSessionSecurityContextRepository();
 
     public AuthController(
             AuthService authService,
-            AuthenticationManager authenticationManager
+            AuthenticationManager authenticationManager,
+            UserRepository userRepository
     ) {
         this.authService = authService;
         this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
     }
+
 
 
     @PostMapping("/register")
@@ -68,17 +76,27 @@ public class AuthController {
 
 
     @GetMapping("/me")
-    public ResponseEntity<Map<String, String>> currentUser(
-            @AuthenticationPrincipal UserDetails user
+    public ResponseEntity<?> currentUser(
+            @AuthenticationPrincipal UserDetails principal
     ) {
-        if (user == null) {
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "Not authenticated"));
         }
 
-        return ResponseEntity.ok(
-                Map.of("email", user.getUsername())
-        );
+        return userRepository.findByEmail(principal.getUsername())
+                .<ResponseEntity<?>>map(user -> ResponseEntity.ok(
+                        Map.of(
+                                "id", user.getId(),
+                                "name", user.getName(),
+                                "email", user.getEmail(),
+                                "totalXp", user.getTotalXp(),
+                                "journeyLevel", user.getJourneyLevel()
+                        )
+                ))
+                .orElseGet(() -> ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("message", "User not found")));
     }
 
 
