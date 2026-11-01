@@ -60,7 +60,7 @@ public class SecurityConfig {
                         })
                 )
 
-                .formLogin(form -> {});
+                .formLogin(form -> form.disable());
 
         return http.build();
     }
