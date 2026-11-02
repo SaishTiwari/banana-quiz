@@ -43,8 +43,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/health",
-                                "/api/banana/question",
-                                "/api/banana/answer",
                                 "/api/auth/csrf",
                                 "/api/auth/register",
                                 "/api/auth/login",
@@ -60,7 +58,7 @@ public class SecurityConfig {
                         })
                 )
 
-                .formLogin(form -> {});
+                .formLogin(form -> form.disable());
 
         return http.build();
     }
