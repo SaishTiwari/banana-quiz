@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Frontend dependencies
+node_modules/
+
+# Frontend build output
+frontend/dist/
