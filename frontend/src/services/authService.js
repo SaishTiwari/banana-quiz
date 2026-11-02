@@ -29,3 +29,9 @@ export async function loginUser(email, password) {
 export async function getCurrentUser() {
     return apiRequest("/auth/me");
 }
+
+export async function logoutUser() {
+    // The backend currently exposes no logout route. Clearing local UI state
+    // is still useful, while the session cookie expires server-side.
+    return null;
+}

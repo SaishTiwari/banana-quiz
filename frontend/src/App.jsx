@@ -9,6 +9,8 @@ import RegisterPage from "./pages/RegisterPage";
 import JourneyPage from "./pages/JourneyPage";
 import DailyPage from "./pages/DailyPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AppLayout from "./components/AppLayout";
+import BattlePage from "./pages/BattlePage";
 
 function App() {
   return (
@@ -20,11 +22,14 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
 
         <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/journey" element={<JourneyPage />} />
           <Route path="/daily" element={<DailyPage />} />
+          <Route path="/battle" element={<BattlePage />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

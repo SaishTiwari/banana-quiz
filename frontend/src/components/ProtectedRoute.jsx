@@ -17,7 +17,7 @@ function ProtectedRoute() {
                 if (active) {
                     setAuthenticated(true);
                 }
-            } catch (error) {
+            } catch {
                 if (active) {
                     setAuthenticated(false);
                 }

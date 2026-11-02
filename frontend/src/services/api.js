@@ -2,6 +2,16 @@
 const API_BASE_URL = "/api";
 
 let csrfToken = null;
+let csrfHeaderName = "X-XSRF-TOKEN";
+
+export class ApiError extends Error {
+    constructor(message, status, details) {
+        super(message);
+        this.name = "ApiError";
+        this.status = status;
+        this.details = details;
+    }
+}
 
 export async function refreshCsrfToken() {
     const response = await fetch(`${API_BASE_URL}/auth/csrf`, {
@@ -9,13 +19,14 @@ export async function refreshCsrfToken() {
     });
 
     if (!response.ok) {
-        throw new Error("Failed to fetch CSRF token");
+        throw new ApiError("Unable to initialize security token.", response.status);
     }
 
     const data = await response.json();
     csrfToken = data.token;
+    csrfHeaderName = data.headerName || csrfHeaderName;
 
-    return csrfToken;
+    return data;
 }
 
 export async function apiRequest(endpoint, options = {}) {
@@ -31,7 +42,7 @@ export async function apiRequest(endpoint, options = {}) {
     };
 
     if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
-        headers["X-XSRF-TOKEN"] = csrfToken;
+        headers[csrfHeaderName] = csrfToken;
     }
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -41,19 +52,25 @@ export async function apiRequest(endpoint, options = {}) {
         headers
     });
 
-    if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
-    }
-
     if (response.status === 204) {
         return null;
     }
 
     const contentType = response.headers.get("content-type") || "";
+    const data = contentType.includes("application/json")
+        ? await response.json()
+        : await response.text();
 
-    if (contentType.includes("application/json")) {
-        return response.json();
+    if (!response.ok) {
+        const message = typeof data === "object" && data?.message
+            ? data.message
+            : response.status === 401
+                ? "Your session has expired. Please sign in again."
+                : response.status === 409
+                    ? "This action has already been completed."
+                    : "Unable to connect to the server. Please try again.";
+        throw new ApiError(message, response.status, data);
     }
 
-    return response.text();
+    return data;
 }
